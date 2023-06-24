@@ -24,13 +24,15 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 187, 187, 187),
       body: Padding(
         padding: EdgeInsets.fromLTRB(30, 50, 30, 50),
         child: Column(
           children: [
             Text(
-              'Login',
-              style: TextStyle(fontSize: 60),
+              'Glossário de Oclusão',
+              style: TextStyle(fontSize: 60,
+              color: Colors.black),
             ),
             SizedBox(height: 60),
             TextField(
@@ -57,7 +59,8 @@ class _LoginViewState extends State<LoginView> {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("Esqueceu a senha?"),
+                        title: Text("Esqueceu a senha?",
+                        style: TextStyle(color: Colors.white),),
                         content: Container(
                           height: 150,
                           child: Column(
@@ -83,7 +86,8 @@ class _LoginViewState extends State<LoginView> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: Text('cancelar'),
+                            child: Text('cancelar',
+                            style: TextStyle(color: Colors.white),),
                           ),
                           ElevatedButton(
                             onPressed: () {
@@ -99,13 +103,15 @@ class _LoginViewState extends State<LoginView> {
                     },
                   );
                 },
-                child: Text('Esqueceu a senha?'),
+                child: Text('Esqueceu a senha?',
+                style: TextStyle(color: Colors.white),),
               ),
             ),
             SizedBox(height: 15),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 minimumSize: Size(200, 40),
+                backgroundColor: Colors.black
               ),
               onPressed: () {
                 LoginController().login(
@@ -125,7 +131,8 @@ class _LoginViewState extends State<LoginView> {
                   onPressed: () {
                     Navigator.pushNamed(context, 'cadastrar');
                   },
-                  child: Text('Cadastre-se'),
+                  child: Text('Cadastre-se',
+                  style: TextStyle(color: Colors.white),),
                 ),
               ],
             )

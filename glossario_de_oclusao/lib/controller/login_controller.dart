@@ -45,7 +45,12 @@ class LoginController {
         .signInWithEmailAndPassword(email: email, password: senha)
         .then((value) {
       sucesso(context, 'Usuário autenticado com sucesso!');
-      Navigator.pushNamed(context, 'principal');
+      if(email == 'akirassan@hotmail.com'){
+        Navigator.pushNamed(context, 'professor');
+      }
+      else{
+        Navigator.pushNamed(context, 'aluno');
+      }
     }).catchError((e) {
       switch (e.code) {
         case 'user-not-found':

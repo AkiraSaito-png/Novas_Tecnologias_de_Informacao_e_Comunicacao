@@ -9,32 +9,39 @@ import '../controller/login_controller.dart';
 import '../controller/tarefa_controller.dart';
 import '../model/tarefa.dart';
 
-class PrincipalView extends StatefulWidget {
-  const PrincipalView({super.key});
+class PrincipalViewAluno extends StatefulWidget {
+  const PrincipalViewAluno({super.key});
 
   @override
-  State<PrincipalView> createState() => _PrincipalViewState();
+  State<PrincipalViewAluno> createState() => _PrincipalViewAlunoState();
 }
 
-class _PrincipalViewState extends State<PrincipalView> {
+class _PrincipalViewAlunoState extends State<PrincipalViewAluno> {
+  var busca = TextEditingController();
   var txtEnunciado = TextEditingController();
   var txtA = TextEditingController();
   var txtB = TextEditingController();
   var txtC = TextEditingController();
   var txtD = TextEditingController();
   var txtAlternativa_correta = TextEditingController();
+  var criado_em;
+  var atualizado_em;
+  var ativo;
   bool checkboxA = false;
   bool checkboxB = false;
   bool checkboxC = false;
   bool checkboxD = false;
+  
+  var index;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 75, 75, 75),
         title: Row(
           children: [
-            Expanded(child: Text('Tarefas')),
+            Expanded(child: Text('Area do aluno')),
             FutureBuilder<String>(
               future: LoginController().usuarioLogado(),
               builder: (context, snapshot) {
@@ -50,19 +57,42 @@ class _PrincipalViewState extends State<PrincipalView> {
                         LoginController().logout();
                         Navigator.pushReplacementNamed(context, 'login');
                       },
-                      icon: Icon(Icons.exit_to_app, size: 14),
-                      label: Text(snapshot.data.toString()),
+                      icon: Icon(Icons.exit_to_app, size: 20),
+                      label: Text('Sair'),
                     ),
                   );
                 }
-                return Text('');
+                TextField(
+                      controller: busca,
+                      decoration: InputDecoration(border: OutlineInputBorder(),labelText: 'Pesquisar'),    
+                      onChanged: searchBar,                  
+                    );
+                return Visibility(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Area do Aluno',
+                      style: Theme.of(context).textTheme.headline3,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // create a searchbar
+                    
+                  ],
+                  ),
+                  
+                );
+                
               },
+              
             ),
+            
           ],
         ),
       ),
 
       // BODY
+      backgroundColor: Color.fromARGB(255, 126, 126, 126),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: StreamBuilder<QuerySnapshot>(
@@ -95,7 +125,8 @@ class _PrincipalViewState extends State<PrincipalView> {
                             txtB.text = item['alternativa_b'];
                             txtC.text = item['alternativa_c'];
                             txtD.text = item['alternativa_d'];
-                            txtAlternativa_correta.text = item['alternativa_correta'];
+                            txtAlternativa_correta.text =
+                                item['alternativa_correta'];
                             alternativas(context, docId: id);
                           },
                           onLongPress: () {
@@ -114,132 +145,6 @@ class _PrincipalViewState extends State<PrincipalView> {
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          salvarTarefa(context);
-        },
-        child: Icon(Icons.add),
-      ),
-    );
-  }
-
-  //
-  // ADICIONAR TAREFA
-  //
-  void salvarTarefa(context, {docId}) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // retorna um objeto do tipo Dialog
-        return AlertDialog(
-          title: Text("Adicionar Tarefa"),
-          content: SizedBox(
-            child: Column(
-              children: [
-                TextField(
-                  controller: txtEnunciado,
-                  decoration: InputDecoration(
-                    labelText: 'Enunciado',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: txtA,
-                  decoration: InputDecoration(
-                    labelText: 'Alternativa A',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: txtB,
-                  decoration: InputDecoration(
-                    labelText: 'Alternativa B',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: txtC,
-                  decoration: InputDecoration(
-                    labelText: 'Alternativa C',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: txtD,
-                  decoration: InputDecoration(
-                    labelText: 'Alternativa D',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                SizedBox(height: 15),
-                TextField(
-                  controller: txtAlternativa_correta,
-                  decoration: InputDecoration(
-                    labelText: 'Alternativa correta',
-                    prefixIcon: Icon(Icons.description),
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actionsPadding: EdgeInsets.fromLTRB(20, 0, 20, 10),
-          actions: [
-            TextButton(
-              child: Text("fechar"),
-              onPressed: () {
-                txtEnunciado.clear();
-                txtA.clear();
-                txtB.clear();
-                txtC.clear();
-                txtD.clear();
-                txtAlternativa_correta.clear();
-                Navigator.of(context).pop();
-              },
-            ),
-            ElevatedButton(
-              child: Text("salvar"),
-              onPressed: () {
-                var t = Tarefa(
-                  LoginController().idUsuario(),
-                  txtEnunciado.text,
-                  txtA.text,
-                  txtB.text,
-                  txtC.text,
-                  txtD.text,
-                  txtAlternativa_correta.text,
-                );
-                txtEnunciado.clear();
-                txtA.clear();
-                txtB.clear();
-                txtC.clear();
-                txtD.clear();
-                txtAlternativa_correta.clear();
-                if (docId == null) {
-                  //
-                  // ADICIONAR TAREFA
-                  //
-                  TarefaController().adicionar(context, t);
-                } else {
-                  //
-                  // ATUALIZAR TAREFA
-                  //
-                  TarefaController().atualizar(context, docId, t);
-                }
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -255,47 +160,52 @@ class _PrincipalViewState extends State<PrincipalView> {
               children: <Widget>[
                 Text(txtEnunciado.text),
                 CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
                   value: checkboxA,
+                  title: const Text('Alternativa A'),
+                  subtitle: Text(txtA.text),
                   onChanged: (bool? value) {
                     setState(() {
                       checkboxA = value!;
                     });
                   },
-                  title: const Text('Alternativa A'),
-                  subtitle: Text(txtA.text)
                 ),
                 const Divider(height: 0),
                 CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
                   value: checkboxB,
+                  title: const Text('Alternativa B'),
+                  subtitle: Text(txtB.text),
                   onChanged: (bool? value) {
                     setState(() {
                       checkboxB = value!;
                     });
                   },
-                  title: const Text('Alternativa B'),
-                  subtitle: Text(txtB.text),
                 ),
                 const Divider(height: 0),
                 CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
                   value: checkboxC,
+                  title: const Text('Alternativa C'),
+                  subtitle: Text(txtC.text),
                   onChanged: (bool? value) {
                     setState(() {
                       checkboxC = value!;
                     });
                   },
-                  title: const Text('Alternativa C'),
-                  subtitle: Text(txtC.text),
                 ),
                 const Divider(height: 0),
                 CheckboxListTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  activeColor: Colors.blue,
                   value: checkboxD,
+                  title: const Text('Alternativa D'),
+                  subtitle: Text(txtD.text),
                   onChanged: (bool? value) {
                     setState(() {
                       checkboxD = value!;
                     });
                   },
-                  title: const Text('Alternativa D'),
-                  subtitle: Text(txtD.text),
                 ),
               ],
             ),
@@ -310,7 +220,6 @@ class _PrincipalViewState extends State<PrincipalView> {
                 txtB.clear();
                 txtC.clear();
                 txtD.clear();
-                txtAlternativa_correta.clear();
                 Navigator.of(context).pop();
               },
             ),
@@ -325,6 +234,9 @@ class _PrincipalViewState extends State<PrincipalView> {
                   txtC.text,
                   txtD.text,
                   txtAlternativa_correta.text,
+                  criado_em,
+                  atualizado_em,
+                  ativo
                 );
                 txtEnunciado.clear();
                 txtA.clear();
@@ -348,6 +260,36 @@ class _PrincipalViewState extends State<PrincipalView> {
           ],
         );
       },
+    );
+  }
+
+  void searchBar(String query){
+    child: StreamBuilder<QuerySnapshot>(
+          stream: TarefaController().listar().snapshots(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return Center(
+                  child: Text('Não foi possível conectar.'),
+                );
+              case ConnectionState.waiting:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              default:
+                final dados = snapshot.requireData;
+                String id = dados.docs[index].id;
+                dynamic item = dados.docs[index].data();
+                final suggestions = item['enunciado'].where((tarefa) {
+                  final title = tarefa.title.toLowerCase();
+                  final input = query.toLowerCase();
+
+                  return title.contains(input);
+                }).toList();
+                        };
+                        return Text('');
+                      },
+          
     );
   }
 }

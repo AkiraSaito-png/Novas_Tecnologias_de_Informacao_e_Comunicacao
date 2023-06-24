@@ -23,8 +23,7 @@ class TarefaController {
   //
   listar() {
     return FirebaseFirestore.instance
-        .collection('tarefas')
-        .where('uid', isEqualTo: LoginController().idUsuario());
+        .collection('tarefas');
   }
 
   //
@@ -51,5 +50,10 @@ class TarefaController {
         .delete()
         .then((value) => sucesso(context, 'Tarefa excluída com sucesso'))
         .catchError((e) => erro(context, 'Não foi possível excluir a tarefa.'));
+  }
+
+  onChanged(String value){
+    return FirebaseFirestore.instance
+        .collection('tarefas').where((e) => e.toString().toLowerCase().contains(value.toLowerCase()));
   }
 }

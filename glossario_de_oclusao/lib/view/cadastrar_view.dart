@@ -24,6 +24,7 @@ class _CadastrarViewState extends State<CadastrarView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromARGB(255, 187, 187, 187),
       body: Padding(
         padding: EdgeInsets.fromLTRB(30, 50, 30, 50),
         child: Column(
@@ -65,11 +66,13 @@ class _CadastrarViewState extends State<CadastrarView> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('cancelar'),
+                  child: Text('cancelar',
+                  style: TextStyle(color: Colors.white),),
                 ),
                 ElevatedButton(
                   style: OutlinedButton.styleFrom(
                     minimumSize: Size(140, 40),
+                    backgroundColor: Colors.black
                   ),
                   onPressed: () {
                     LoginController().criarConta(
@@ -79,7 +82,7 @@ class _CadastrarViewState extends State<CadastrarView> {
                       txtSenha.text,
                     );
                   },
-                  child: Text('salvar'),
+                  child: Text('salvar',),
                 ),
               ],
             ),
